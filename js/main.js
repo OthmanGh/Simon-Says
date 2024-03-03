@@ -32,17 +32,17 @@ const lightCompTiles = (arr) => {
   });
 };
 
-const lightUserTile = (numClicks) => {
-  const userPattern = [];
+const lightUserTile = () => {
   board.classList.remove('unclickable');
-
-  setTimeout(() => {
-    board.classList.add('unclickable');
-  }, numClicks * 5000);
 
   tiles.forEach((tile) => {
     tile.addEventListener('click', handleTileClick);
   });
+
+  setTimeout(() => {
+    board.classList.add('unclickable');
+    checkUserPattern();
+  }, compPattern.length * 1000 + 2000);
 };
 
 const handleTileClick = (e) => {
@@ -50,18 +50,28 @@ const handleTileClick = (e) => {
   userPattern.push(userClickedTileColor);
 };
 
+const checkUserPattern = () => {
+  for (let i = 0; i < userPattern.length; i++) {
+    if (userPattern[i] !== compPattern[i]) {
+      alert('You Lost ');
+      return;
+    }
+  }
+
+  if (userPattern.length === compPattern.length) {
+    level += 1;
+    levelEl.textContent = level;
+    userPattern = [];
+    setTimeout(runGame, 1000);
+  }
+};
+
 function runGame() {
+  levelEl.textContent = level;
   if (level == 0) return;
-
   compPattern.push(generateRandomTile());
-  console.log(compPattern);
-
   lightCompTiles(compPattern);
   lightUserTile(compPattern.length);
-  console.log(userPattern);
-
-  level -= 1;
-  runGame(level);
 }
 
 playButton.addEventListener('click', runGame);
