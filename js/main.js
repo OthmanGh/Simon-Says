@@ -4,7 +4,8 @@ const levelEl = document.getElementById('level');
 const tiles = document.querySelectorAll('.tile');
 const board = document.querySelector('.board');
 let compPattern = [];
-let level = 5;
+let userPattern = [];
+let level = 1;
 let score = 0;
 
 const tileChoices = ['green', 'red', 'blue', 'yellow'];
@@ -21,9 +22,8 @@ const playSound = (color) => {
 const lightCompTiles = (arr) => {
   arr.forEach((color, index) => {
     setTimeout(() => {
-      console.log(color);
-
       document.querySelector(`.${color}`).classList.remove('inactive');
+      playSound(color);
 
       setTimeout(() => {
         document.querySelector(`.${color}`).classList.add('inactive');
@@ -32,9 +32,21 @@ const lightCompTiles = (arr) => {
   });
 };
 
-// const lightUserTile = () => {
-//   const userPattern = [];
-// };
+const lightUserTile = (numClicks) => {
+  const userPattern = [];
+
+  board.classList.remove('unclickable');
+
+  setTimeout(() => {
+    board.classList.add('unclickable');
+  }, numClicks * 5000);
+
+  tiles.forEach((tile) => {
+    tile.addEventListener('click', handleTileClick);
+  });
+};
+
+const handleTileClick = () => {};
 
 function runGame() {
   if (level == 0) return;
@@ -43,6 +55,7 @@ function runGame() {
   console.log(compPattern);
 
   lightCompTiles(compPattern);
+  lightUserTile(compPattern.length);
 
   level -= 1;
   runGame(level);
