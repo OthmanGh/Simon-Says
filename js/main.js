@@ -34,7 +34,6 @@ const lightCompTiles = (arr) => {
 
 const lightUserTile = (numClicks) => {
   const userPattern = [];
-
   board.classList.remove('unclickable');
 
   setTimeout(() => {
@@ -46,7 +45,10 @@ const lightUserTile = (numClicks) => {
   });
 };
 
-const handleTileClick = () => {};
+const handleTileClick = (e) => {
+  const userClickedTileColor = e.target.getAttribute('data-tile');
+  userPattern.push(userClickedTileColor);
+};
 
 function runGame() {
   if (level == 0) return;
@@ -56,6 +58,7 @@ function runGame() {
 
   lightCompTiles(compPattern);
   lightUserTile(compPattern.length);
+  console.log(userPattern);
 
   level -= 1;
   runGame(level);
