@@ -3,10 +3,8 @@ const scoreEl = document.getElementById('high-score');
 const levelEl = document.getElementById('level');
 const tiles = document.querySelectorAll('.tile');
 const board = document.querySelector('.board');
-const compPattern = [];
-const userPattern = [];
-let currentLevel;
-let level = 0;
+let compPattern = [];
+let level = 5;
 let score = 0;
 
 const tileChoices = ['green', 'red', 'blue', 'yellow'];
@@ -20,19 +18,34 @@ const playSound = (color) => {
   audio.play();
 };
 
-playButton.addEventListener('click', () => {
-  compPattern.push(generateRandomTile(tileChoices));
-  level += 1;
-  levelEl.textContent = level;
-
-  compPattern.forEach((tile, index) => {
+const lightCompTiles = (arr) => {
+  arr.forEach((color, index) => {
     setTimeout(() => {
-      document.querySelector(`.${tile}`).classList.remove('inactive');
-      playSound(tile);
+      console.log(color);
+
+      document.querySelector(`.${color}`).classList.remove('inactive');
 
       setTimeout(() => {
-        document.querySelector(`.${tile}`).classList.add('inactive');
+        document.querySelector(`.${color}`).classList.add('inactive');
       }, 500);
     }, index * 1000);
   });
-});
+};
+
+// const lightUserTile = () => {
+//   const userPattern = [];
+// };
+
+function runGame() {
+  if (level == 0) return;
+
+  compPattern.push(generateRandomTile());
+  console.log(compPattern);
+
+  lightCompTiles(compPattern);
+
+  level -= 1;
+  runGame(level);
+}
+
+playButton.addEventListener('click', runGame);
