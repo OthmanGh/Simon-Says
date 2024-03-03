@@ -6,7 +6,6 @@ const board = document.querySelector('.board');
 let compPattern = [];
 let userPattern = [];
 let level = 1;
-let score = 0;
 
 const tileChoices = ['green', 'red', 'blue', 'yellow'];
 
@@ -42,7 +41,7 @@ const lightUserTile = () => {
   setTimeout(() => {
     board.classList.add('unclickable');
     checkUserPattern();
-  }, compPattern.length * 1000 + 2000);
+  }, compPattern.length * 2000 + 2000);
 };
 
 const handleTileClick = (e) => {
@@ -53,7 +52,17 @@ const handleTileClick = (e) => {
 const checkUserPattern = () => {
   for (let i = 0; i < userPattern.length; i++) {
     if (userPattern[i] !== compPattern[i]) {
-      alert('You Lost ');
+      tiles.forEach((tile) => {
+        tile.classList.remove('inactive');
+      });
+      playSound('wrong');
+
+      setTimeout(() => {
+        tiles.forEach((tile) => {
+          tile.classList.add('inactive');
+        });
+      }, 1000);
+      gameReset();
       return;
     }
   }
@@ -65,6 +74,13 @@ const checkUserPattern = () => {
     setTimeout(runGame, 1000);
   }
 };
+
+function gameReset() {
+  level = 1;
+  levelEl.textContent = 0;
+  compPattern = [];
+  userPattern = [];
+}
 
 function runGame() {
   levelEl.textContent = level;
