@@ -6,16 +6,28 @@ const board = document.querySelector('.board');
 let compPattern = [];
 let userPattern = [];
 let level = 1;
-
+let higherScore = 0;
 const tileChoices = ['green', 'red', 'blue', 'yellow'];
 
-// Functions
 const generateRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
 const generateRandomTile = () => tileChoices[generateRandomNumber(0, tileChoices.length - 1)];
 
 const playSound = (color) => {
   const audio = new Audio(`./sounds/${color}.mp3`);
   audio.play();
+};
+
+const lightAllTileAtOnce = (color) => {
+  tiles.forEach((tile) => {
+    tile.classList.remove('inactive');
+  });
+  playSound(color);
+
+  setTimeout(() => {
+    tiles.forEach((tile) => {
+      tile.classList.add('inactive');
+    });
+  }, 1000);
 };
 
 const lightCompTiles = (arr) => {
@@ -50,18 +62,18 @@ const handleTileClick = (e) => {
 };
 
 const checkUserPattern = () => {
+  higherScore = higherScore < level ? level : higherScore;
+
+  if (level >= 1) {
+    lightAllTileAtOnce('game-win');
+    higherScore = 0;
+    gameReset();
+    return;
+  }
+
   for (let i = 0; i < userPattern.length; i++) {
     if (userPattern[i] !== compPattern[i]) {
-      tiles.forEach((tile) => {
-        tile.classList.remove('inactive');
-      });
-      playSound('wrong');
-
-      setTimeout(() => {
-        tiles.forEach((tile) => {
-          tile.classList.add('inactive');
-        });
-      }, 1000);
+      lightAllTileAtOnce('wrong');
       gameReset();
       return;
     }
@@ -76,6 +88,7 @@ const checkUserPattern = () => {
 };
 
 function gameReset() {
+  scoreEl.textContent = higherScore;
   level = 1;
   levelEl.textContent = 0;
   compPattern = [];
